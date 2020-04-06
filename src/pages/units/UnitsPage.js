@@ -20,7 +20,7 @@ class Units extends Component {
             params: {
                 search: { name: '' },
                 sort: 'asc',
-                size: 3,
+                size: 5,
                 page: 0
             },
             error: null
@@ -67,6 +67,7 @@ class Units extends Component {
 
     onRowsDelete = (rowsDeleted) => {
         const { list } = this.props.data;
+        const{ params } =this.state;
         const e = list[rowsDeleted.data[0].index];
         Swal.fire({
             title: 'Are you sure?',
@@ -79,6 +80,7 @@ class Units extends Component {
         }).then((result) => {
             if (result.value) {
                 this.props.deleteById(e.id);
+                this.onChangePage(this.state.params.page - 1);
             }
         })
 
@@ -123,6 +125,13 @@ class Units extends Component {
                 options: {
                     sort: false
                 }
+            },
+            {
+                name: "description",
+                label: "Description",
+                options: {
+                    sort: false
+                }
             }
         ];
 
@@ -133,7 +142,7 @@ class Units extends Component {
             page: params.page,
             count: total,
             rowsPerPage: params.size,
-            rowsPerPageOptions: [2, 10, 15, 100],
+            rowsPerPageOptions: [2, 5, 10, 15, 100],
             filter: false,
             onRowClick: this.onRowClick,
             onChangePage: this.onChangePage,

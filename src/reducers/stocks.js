@@ -1,46 +1,43 @@
 import {
-    FIND_ITEM_REQUEST,
-    FIND_ITEM_SUCCESS,
-    FIND_ITEM_FAILURE,
-    FIND_ITEM_IMAGE_REQUEST,
-    FIND_ITEM_IMAGE_SUCCESS,
-    FIND_ITEM_IMAGE_FAILURE,
-    FIND_ITEMS_REQUEST,
-    FIND_ITEMS_SUCCESS,
-    FIND_ITEMS_FAILURE,
-    DELETE_ITEM_SUCCESS,
-    DELETE_ITEM_REQUEST,
-    DELETE_ITEM_FAILURE,
-    ADD_ITEM_SUCCESS,
-    ADD_ITEM_REQUEST,
-    ADD_ITEM_FAILURE,
-    UPDATE_ITEM_SUCCESS,
-    UPDATE_ITEM_REQUEST,
-    UPDATE_ITEM_FAILURE,
-    UPLOAD_ITEM_IMAGE_REQUEST,
-    UPLOAD_ITEM_IMAGE_SUCCESS,
-    UPLOAD_ITEM_IMAGE_FAILURE
+    FIND_STOCK_REQUEST,
+    FIND_STOCK_SUCCESS,
+    FIND_STOCK_FAILURE,
+    FIND_STOCKS_REQUEST,
+    FIND_STOCKS_SUCCESS,
+    FIND_STOCKS_FAILURE,
+    DELETE_STOCK_SUCCESS,
+    DELETE_STOCK_REQUEST,
+    DELETE_STOCK_FAILURE,
+    ADD_STOCK_SUCCESS,
+    ADD_STOCK_REQUEST,
+    ADD_STOCK_FAILURE,
+    UPDATE_STOCK_SUCCESS,
+    UPDATE_STOCK_REQUEST,
+    UPDATE_STOCK_FAILURE,
+    SUMMARY_STOCKS_REQUEST,
+    SUMMARY_STOCKS_SUCCESS,
+    SUMMARY_STOCKS_FAILURE,
 } from "../actions/constants";
 
 const defaultState = { data: null, loading: false, error: null }
 
 
-export function deleteItemById(state = defaultState, action) {
+export function deleteStockById(state = defaultState, action) {
 
     switch (action.type) {
-        case DELETE_ITEM_REQUEST:
+        case DELETE_STOCK_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-        case DELETE_ITEM_SUCCESS:
+        case DELETE_STOCK_SUCCESS:
             return {
                 data: action.data,
                 loading: false,
                 error: null
             };
-        case DELETE_ITEM_FAILURE:
+        case DELETE_STOCK_FAILURE:
             return {
                 ...state,
                 loading: false,
@@ -52,22 +49,22 @@ export function deleteItemById(state = defaultState, action) {
 
 }
 
-export function addItem(state = defaultState, action) {
+export function addStock(state = defaultState, action) {
 
     switch (action.type) {
-        case ADD_ITEM_REQUEST:
+        case ADD_STOCK_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-        case ADD_ITEM_SUCCESS:
+        case ADD_STOCK_SUCCESS:
             return {
                 data: action.data,
                 loading: false,
                 error: null
             };
-        case ADD_ITEM_FAILURE:
+        case ADD_STOCK_FAILURE:
             return {
                 ...state,
                 loading: false,
@@ -79,22 +76,22 @@ export function addItem(state = defaultState, action) {
 
 }
 
-export function editItem(state = defaultState, action) {
+export function editStock(state = defaultState, action) {
 
     switch (action.type) {
-        case UPDATE_ITEM_REQUEST:
+        case UPDATE_STOCK_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-        case UPDATE_ITEM_SUCCESS:
+        case UPDATE_STOCK_SUCCESS:
             return {
                 data: action.data,
                 loading: false,
                 error: null
             };
-        case UPDATE_ITEM_FAILURE:
+        case UPDATE_STOCK_FAILURE:
             return {
                 ...state,
                 loading: false,
@@ -107,21 +104,21 @@ export function editItem(state = defaultState, action) {
 }
 
 
-export function findItemById(state = defaultState, action) {
+export function findStockById(state = defaultState, action) {
     switch (action.type) {
-        case FIND_ITEM_REQUEST:
+        case FIND_STOCK_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-        case FIND_ITEM_SUCCESS:
+        case FIND_STOCK_SUCCESS:
             return {
                 data: action.data,
                 loading: false,
                 error: null
             };
-        case FIND_ITEM_FAILURE:
+        case FIND_STOCK_FAILURE:
             return {
                 ...state,
                 loading: false,
@@ -133,21 +130,21 @@ export function findItemById(state = defaultState, action) {
 
 }
 
-export function findItemImage(state = defaultState, action) {
+export function findStocks(state = defaultState, action) {
     switch (action.type) {
-        case FIND_ITEM_IMAGE_REQUEST:
+        case FIND_STOCKS_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-        case FIND_ITEM_IMAGE_SUCCESS:
+        case FIND_STOCKS_SUCCESS:
             return {
                 data: action.data,
                 loading: false,
                 error: null
             };
-        case FIND_ITEM_IMAGE_FAILURE:
+        case FIND_STOCKS_FAILURE:
             return {
                 ...state,
                 loading: false,
@@ -159,48 +156,22 @@ export function findItemImage(state = defaultState, action) {
 
 }
 
-export function uploadItemImage(state = defaultState, action) {
 
+export function summaryStocks(state = defaultState, action) {
     switch (action.type) {
-        case UPLOAD_ITEM_IMAGE_REQUEST:
+        case SUMMARY_STOCKS_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-        case UPLOAD_ITEM_IMAGE_SUCCESS:
+        case SUMMARY_STOCKS_SUCCESS:
             return {
                 data: action.data,
                 loading: false,
                 error: null
             };
-        case UPLOAD_ITEM_IMAGE_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.error
-            };
-        default:
-            return state;
-    }
-
-}
-
-export function findItems(state = defaultState, action) {
-    switch (action.type) {
-        case FIND_ITEMS_REQUEST:
-            return {
-                ...state,
-                loading: true,
-                error: null
-            };
-        case FIND_ITEMS_SUCCESS:
-            return {
-                data: action.data,
-                loading: false,
-                error: null
-            };
-        case FIND_ITEMS_FAILURE:
+        case SUMMARY_STOCKS_FAILURE:
             return {
                 ...state,
                 loading: false,

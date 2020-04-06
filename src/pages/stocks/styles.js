@@ -1,14 +1,8 @@
 const styles = theme => ({
-    formButton: {
+    buttonContainer: {
         margin: theme.spacing(2),
         display: 'flex',
-        justifyContent: 'flex-start'
-    },
-    formField: {
-        '& > *': {
-            margin: theme.spacing(2),
-            width: '50ch',
-        },
+        justifyContent: 'flex-end',
     },
     buttonStyle: {
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -19,20 +13,17 @@ const styles = theme => ({
         margin: 4
 
     },
-    loadingStyle: {
-        margin: 0
-    },
     modal: {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-      },
-      paper: {
+    },
+    paper: {
         backgroundColor: theme.palette.background.paper,
         border: '2px solid #000',
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3),
-      },
+    },
 });
 
 export default styles;

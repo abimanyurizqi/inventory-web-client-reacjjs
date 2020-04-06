@@ -14,7 +14,7 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
+      <Router basename="/web-client">
         <Switch>
           {routes.map((route, index) => 
           <Route key={index} 

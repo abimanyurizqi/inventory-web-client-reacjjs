@@ -6,7 +6,7 @@ const styles = theme => ({
         //     width: `calc(100% - ${DRAWER_WIDTH}px)`,
         //     marginLeft: DRAWER_WIDTH,
         // },
-        background: 'linear-gradient(45deg, #ee6002 30%, #ff9e22 70%)',
+        background: 'linear-gradient(45deg, #242322 30%, #363535 70%)',
         zIndex: theme.zIndex.drawer + 1,
     },
     menuButton: {

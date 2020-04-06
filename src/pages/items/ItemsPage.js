@@ -21,7 +21,7 @@ class ItemsPage extends Component {
             params: {
                 search: { name: '' },
                 sort: 'asc',
-                size: 2,
+                size: 5,
                 page: 0
             },
             error: null
@@ -82,6 +82,7 @@ class ItemsPage extends Component {
         }).then((result) => {
             if (result.value) {
                 this.props.deleteById(e.id);
+                this.onChangePage(this.state.params.page - 1)
             }
         })
         

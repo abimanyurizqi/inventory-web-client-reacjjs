@@ -1,19 +1,23 @@
-import { TransactionsPage } from '../pages/transactions';
-import { StocksPage } from '../pages/stocks';
+import { TransactionsPage , TransactionPage} from '../pages/transactions';
+import { StocksPage, StockPage } from '../pages/stocks';
 import { ItemsPage, ItemPage } from '../pages/items';
-import { UnitsPage } from '../pages/units';
+import { UnitsPage, UnitPage } from '../pages/units';
 import { ErrorPage } from '../pages/error';
 
 
 const routes = [
   {
+    path: '/transactions/add',
+    component: TransactionPage,
+  },
+  {
+    path: '/transactions/:id',
+    component: TransactionPage,
+  },
+  {
     path: '/',
     component: TransactionsPage,
     exact: true
-  },
-  {
-    path: '/transactions',
-    component: TransactionsPage,
   },
   {
     path: '/items/add',
@@ -28,8 +32,24 @@ const routes = [
     component: ItemsPage
   },
   {
+    path: '/stocks/add',
+    component: StockPage
+  },
+  {
+    path: '/stocks/:id',
+    component: StockPage
+  },
+  {
     path: '/stocks',
     component: StocksPage
+  },
+  {
+    path: '/units/add',
+    component: UnitPage
+  },
+  {
+    path: '/units/:id',
+    component: UnitPage
   },
   {
     path: '/units',

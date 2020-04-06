@@ -46,7 +46,7 @@ class Page extends Component {
                     <Snackbar open={this.state.alertShow} autoHideDuration={6000} onClose={this.hideAlert}>
                         <Alert onClose={this.hideAlert} elevation={6} variant="filled" severity="error">
                             {error?.message}
-        </Alert>
+                        </Alert>
                     </Snackbar>
                 </main>
             </div>
