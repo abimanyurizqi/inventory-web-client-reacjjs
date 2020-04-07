@@ -1,19 +1,22 @@
 import {
-    FIND_TRANSACTION_REQUEST, 
-    FIND_TRANSACTION_SUCCESS, 
-    FIND_TRANSACTION_FAILURE, 
-    FIND_TRANSACTIONS_REQUEST, 
-    FIND_TRANSACTIONS_SUCCESS, 
-    FIND_TRANSACTIONS_FAILURE, 
-    DELETE_TRANSACTION_REQUEST, 
-    DELETE_TRANSACTION_SUCCESS, 
+    FIND_TRANSACTION_REQUEST,
+    FIND_TRANSACTION_SUCCESS,
+    FIND_TRANSACTION_FAILURE,
+    FIND_TRANSACTIONS_REQUEST,
+    FIND_TRANSACTIONS_SUCCESS,
+    FIND_TRANSACTIONS_FAILURE,
+    DELETE_TRANSACTION_REQUEST,
+    DELETE_TRANSACTION_SUCCESS,
     DELETE_TRANSACTION_FAILURE,
     ADD_TRANSACTION_REQUEST,
     ADD_TRANSACTION_SUCCESS,
     ADD_TRANSACTION_FAILURE,
     UPDATE_TRANSACTION_REQUEST,
     UPDATE_TRANSACTION_SUCCESS,
-    UPDATE_TRANSACTION_FAILURE
+    UPDATE_TRANSACTION_FAILURE,
+    SUMMARY_TRANSACTIONS_REQUEST,
+    SUMMARY_TRANSACTIONS_FAILURE,
+    SUMMARY_TRANSACTIONS_SUCCESS
 } from './constants';
 import { commonAxios } from '../utils/apiUtil';
 import Swal from 'sweetalert2';
@@ -72,36 +75,36 @@ export const add = (transaction) =>
 
         dispatch({ type: ADD_TRANSACTION_REQUEST });
 
-        commonAxios.post(`transactions`,transaction)
+        commonAxios.post(`transactions`, transaction)
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(addTransactionSuccess(data));
-               
+
             })
             .catch(error => {
                 console.log(error)
                 dispatch(addTransactionFailure(error));
-                
+
             });
     };
 
-    export const edit = (transaction) =>
+export const edit = (transaction) =>
     (dispatch) => {
 
         dispatch({ type: UPDATE_TRANSACTION_REQUEST });
 
-        commonAxios.put(`transactions/${transaction.id}`, transaction )
+        commonAxios.put(`transactions/${transaction.id}`, transaction)
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(editTransactionSuccess(data));
-                
+
             })
             .catch(error => {
                 console.log(error)
                 dispatch(editTransactionFailure(error));
-                
+
             });
-    };    
+    };
 
 
 
@@ -119,6 +122,23 @@ export const findAll = ({ search, sort = 'asc', page = 0, size = 10 } = {}) =>
             })
             .catch(error => {
                 dispatch(findTransactionsFailure(error));
+            });
+    };
+
+    export const summary = ({year, month, date } = {}) =>
+    (dispatch) => {
+        dispatch({
+            type: SUMMARY_TRANSACTIONS_REQUEST
+        });
+        commonAxios.get('transactions/summary',
+        {params: { year, month, date }}
+        )
+            .then(data => sleep(1000, data))
+            .then(data => {
+                dispatch(summaryTransactionsSuccess(data));
+            })
+            .catch(error => {
+                dispatch(summaryTransactionsFailure(error));
             });
     };
 
@@ -188,6 +208,20 @@ function editTransactionFailure(error) {
 function editTransactionSuccess(data) {
     return {
         type: UPDATE_TRANSACTION_SUCCESS,
+        data: data
+    }
+}
+
+function summaryTransactionsFailure(error) {
+    return {
+        type: SUMMARY_TRANSACTIONS_FAILURE,
+        error: error
+    }
+}
+
+function summaryTransactionsSuccess(data) {
+    return {
+        type: SUMMARY_TRANSACTIONS_SUCCESS,
         data: data
     }
 }

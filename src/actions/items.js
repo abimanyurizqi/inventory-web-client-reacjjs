@@ -19,7 +19,10 @@ import {
     UPDATE_ITEM_FAILURE,
     UPLOAD_ITEM_IMAGE_REQUEST,
     UPLOAD_ITEM_IMAGE_SUCCESS,
-    UPLOAD_ITEM_IMAGE_FAILURE
+    UPLOAD_ITEM_IMAGE_FAILURE,
+    DELETE_ITEM_IMAGE_REQUEST,
+    DELETE_ITEM_IMAGE_SUCCESS,
+    DELETE_ITEM_IMAGE_FAILURE
 } from './constants';
 import { commonAxios } from '../utils/apiUtil';
 import Swal from 'sweetalert2';
@@ -53,6 +56,22 @@ export const deleteById = (id) =>
                     'Delete process went wrong.',
                     'error'
                 )
+            });
+    };
+
+    export const deleteImage = (id,image) =>
+    (dispatch) => {
+
+        dispatch({ type: DELETE_ITEM_IMAGE_REQUEST });
+        
+        commonAxios.delete(`items/${id}/images/${image.name}`)
+            .then(data => sleep(3000, data))
+            .then(data => {
+                dispatch(deleteItemImageSuccess(data));
+            })
+            .catch(error => {
+                console.log(error)
+                dispatch(deleteItemImageFailure(error));
             });
     };
 
@@ -95,13 +114,13 @@ export const findImage = (id) =>
         dispatch({ type: UPLOAD_ITEM_IMAGE_REQUEST });
         
         const fd = new FormData();
-        fd.append("image", image);
+        fd.append("file", image[0]);
         commonAxios.post(`items/${id}/images`, fd, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
         })
-            .then(data => sleep(1000, data))
+            .then(data => sleep(3000, data))
             .then(data => {
                 dispatch(uploadItemImageSuccess(data));
             })
@@ -260,6 +279,20 @@ function uploadItemImageFailure(error) {
 function uploadItemImageSuccess(data) {
     return {
         type: UPLOAD_ITEM_IMAGE_SUCCESS,
+        data: data.data
+    }
+}
+
+function deleteItemImageFailure(error) {
+    return {
+        type: DELETE_ITEM_IMAGE_FAILURE,
+        error: error
+    }
+}
+
+function deleteItemImageSuccess(data) {
+    return {
+        type: DELETE_ITEM_IMAGE_SUCCESS,
         data: data.data
     }
 }

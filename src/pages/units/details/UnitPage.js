@@ -118,14 +118,14 @@ class UnitPage extends Component {
                     <form noValidate autoComplete="off" onSubmit={this.onSubmit}>
                         {unit.id &&
                             <div className={classes.formField}>
-                                <TextField id="id" name="id" label="ID" value={unit.id} fullWidth InputProps={{ readOnly: true }} error={errorData.name}  />
+                                <TextField id="id" name="id" label="ID" value={unit.id} fullWidth InputProps={{ readOnly: true }}   />
                             </div>
                         }
                         <div className={classes.formField}>
-                            <TextField id="name" name="name" label="Name" value={unit.name} fullWidth onChange={this.onChange} helperText={errorData.name?errorData.name[0]:null} />
+                            <TextField id="name" name="name" label="Name" value={unit.name} fullWidth onChange={this.onChange} error={errorData.name} helperText={errorData.name?errorData.name[0]:null} />
                         </div>
                         <div className={classes.formField}>
-                            <TextField id="description" name="description" label="Description" value={unit.description} fullWidth onChange={this.onChange} />
+                            <TextField id="description" name="description" label="Description" value={unit.description} fullWidth onChange={this.onChange} error={errorData.description} helperText={errorData.description?errorData.description[0]:null} />
                         </div>
                         <div className={classes.formButton}>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"

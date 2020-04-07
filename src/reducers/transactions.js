@@ -13,7 +13,10 @@ import {
     ADD_TRANSACTION_FAILURE,
     UPDATE_TRANSACTION_SUCCESS,
     UPDATE_TRANSACTION_REQUEST,
-    UPDATE_TRANSACTION_FAILURE
+    UPDATE_TRANSACTION_FAILURE,
+    SUMMARY_TRANSACTIONS_REQUEST,
+    SUMMARY_TRANSACTIONS_FAILURE,
+    SUMMARY_TRANSACTIONS_SUCCESS
 } from "../actions/constants";
 
 const defaultState = { data: null, loading: false, error: null }
@@ -152,3 +155,30 @@ export function findTransactions(state = defaultState, action) {
     }
 
 }
+
+export function summaryTransactions(state = defaultState, action) {
+    switch (action.type) {
+        case SUMMARY_TRANSACTIONS_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: null
+            };
+        case SUMMARY_TRANSACTIONS_SUCCESS:
+            return {
+                data: action.data,
+                loading: false,
+                error: null
+            };
+        case SUMMARY_TRANSACTIONS_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+
+}
+

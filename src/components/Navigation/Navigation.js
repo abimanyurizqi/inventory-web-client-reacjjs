@@ -15,6 +15,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 
+import { Button } from '@material-ui/core';
+
 import { Link } from "react-router-dom";
 
 import { withStyles } from '@material-ui/core/styles';
@@ -57,12 +59,12 @@ class Navigation extends Component {
                 <Divider />
                 <List>
                     {menus.map((menu, index) => (
-                        <Link key={index} to={menu.path}>
+                        <Button key={index} href={menu.path}>
                             <ListItem button>
                                 <ListItemIcon><menu.icon /></ListItemIcon>
                                 <ListItemText primary={menu.label} />
                             </ListItem>
-                        </Link>
+                        </Button>
                     ))}
                 </List>
             </div>

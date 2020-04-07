@@ -3,7 +3,7 @@ import './Transactions.css';
 import Page from '../../components/Page';
 import Swal from 'sweetalert2';
 import MUIDataTable from "mui-datatables";
-import { findAll, deleteById } from '../../actions/transactions';
+import { findAll, deleteById, summary } from '../../actions/transactions';
 import styles from './styles';
 import { withStyles } from '@material-ui/core/styles';
 import { Button, CircularProgress } from '@material-ui/core';
@@ -26,15 +26,19 @@ class TransactionsPage extends Component {
                 size: 10,
                 page: 0
             },
-            error: null
+            error: null,
+            open: false,
+            summaryParams: {
+                year: null,
+                month: null,
+                date: null
+            }
 
         };
     }
 
     componentDidMount() {
         this.reload();
-       
-
     }
 
     reload() {
@@ -48,7 +52,7 @@ class TransactionsPage extends Component {
 
 
     componentDidUpdate(prevProps, prevState) {
-        const { deleteData, deleteError, error, data } = this.props;
+        const { deleteData, deleteError, error, data, summaryData } = this.props;
         const { params } = this.state;
 
         if (prevProps.data !== data) {
@@ -60,6 +64,8 @@ class TransactionsPage extends Component {
             this.setState({ error: deleteError });
         } else if (error && prevProps.error !== error) {
             this.setState({ error: error });
+        } else if (prevProps.summaryData !== summaryData) {
+            this.setState({ summaryData: summaryData });
         }
     }
 
@@ -87,7 +93,7 @@ class TransactionsPage extends Component {
                 this.props.deleteById(e.id);
             }
         })
-        
+
     }
 
     onChangePage = (currentPage) => {
@@ -111,10 +117,21 @@ class TransactionsPage extends Component {
         this.setState({ params: { ...params, size: numberOfRows } });
     }
 
+    handleOpen = () => {
+        this.setState({ open: true });
+        this.props.summary(this.state.summaryParams);
+
+    };
+
+    handleClose = () => {
+        this.setState({ open: false });
+        this.reload()
+    };
+
 
     render() {
         const { classes, loading } = this.props;
-        const { data, total, params, error } = this.state;
+        const { data, total, params, error, open, summaryData } = this.state;
 
         const column = [
             {
@@ -147,6 +164,33 @@ class TransactionsPage extends Component {
             }
         ];
 
+
+        const columnSummary = [
+            {
+                name: "type",
+                label: "Type"
+            },
+            {
+                name: "amount",
+                label: "Amount(Rp)"
+            },
+            {
+                name: "jumlah",
+                label: "Jumlah"
+            }
+        ];
+
+        const optionsSummary = {
+            serverSide: true,
+            selectableRows: false,
+            textLabels: {
+                body: {
+                    noMatch: loading ? <CircularProgress /> : "sorry, no stocks found"
+                }
+            }
+        }
+
+
         const options = {
             searchText: params.search.name,
             serverSide: true,
@@ -172,25 +216,62 @@ class TransactionsPage extends Component {
 
         return (
             <Page error={error} >
-                <div className={classes.buttonContainer}>
-                    <Button className={classes.buttonStyle} variant="contained" color="primary"
-                        onClick={this.onAdd}
-                        startIcon={<AddIcon />}>
-                        New Transaction
+                {!open ?
+                    <div>
+                        
+                        <div className={classes.buttonContainer}>
+                            <Button className={classes.buttonStyle} variant="contained" color="primary"
+                                onClick={this.onAdd}
+                                startIcon={<AddIcon />}>
+                                New Transaction
+                    </Button>
+                            <Button className={classes.buttonStyle} variant="contained" color="primary"
+                                onClick={this.onReload}
+                                startIcon={<RefreshIcon />}
+                                disabled={loading}>
+                                Reload
                     </Button>
                     <Button className={classes.buttonStyle} variant="contained" color="primary"
-                        onClick={this.onReload}
-                        startIcon={<RefreshIcon />}
-                        disabled={loading}>
-                        Reload
-                    </Button>
-                </div>
-                <MUIDataTable
-                    title={"Transactions List"}
-                    data={!loading ? data : []}
-                    columns={column}
-                    options={options}
-                />
+                                onClick={this.handleOpen}
+                                startIcon={<AddIcon />}>
+                                Summary
+                            </Button>
+                        </div>
+                        <MUIDataTable
+                            title={"Transactions List"}
+                            data={!loading ? data : []}
+                            columns={column}
+                            options={options}
+                        />
+                    </div> :
+                    <div>
+                        <div className={classes.buttonContainer}>
+                            <Button className={classes.buttonStyle} variant="contained" color="primary"
+                                onClick={this.onAdd}
+                                startIcon={<AddIcon />}>
+                                New Transaction
+                            </Button>
+                            <Button className={classes.buttonStyle} variant="contained" color="primary"
+                                onClick={this.onReload}
+                                startIcon={<RefreshIcon />}
+                                disabled={loading}>
+                                Reload
+                            </Button>
+                            <Button className={classes.buttonStyle} variant="contained" color="primary"
+                                onClick={this.handleClose}
+                                startIcon={<AddIcon />}>
+                                TRansaction List
+                            </Button>
+                        </div>
+                        <MUIDataTable
+                            title={"Transactions Summary List"}
+                            data={!loading ? summaryData : []}
+                            columns={columnSummary}
+                            options={optionsSummary}
+                        />
+                    </div>
+                }
+
 
             </Page>
 
@@ -200,14 +281,18 @@ class TransactionsPage extends Component {
 
 const mapStateToProps = state => ({
     data: state.findTransactions.data,
-    loading: state.findTransactions.loading || state.deleteTransactionById.loading,
+    loading: state.findTransactions.loading || state.deleteTransactionById.loading || state.summaryTransactions.loading,
     error: state.findTransactions.error,
     deleteData: state.deleteTransactionById.data,
     deleteError: state.deleteTransactionById.error,
+
+    summaryData: state.summaryTransactions.data,
+    summaryError: state.summaryTransactions.error
+
 });
 
 const mapDispatchToProps = {
-    findAll, deleteById
+    findAll, deleteById, summary
 };
 
 export default withStyles(styles, { withTheme: true })(

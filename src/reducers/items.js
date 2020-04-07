@@ -19,7 +19,10 @@ import {
     UPDATE_ITEM_FAILURE,
     UPLOAD_ITEM_IMAGE_REQUEST,
     UPLOAD_ITEM_IMAGE_SUCCESS,
-    UPLOAD_ITEM_IMAGE_FAILURE
+    UPLOAD_ITEM_IMAGE_FAILURE,
+    DELETE_ITEM_IMAGE_REQUEST,
+    DELETE_ITEM_IMAGE_SUCCESS,
+    DELETE_ITEM_IMAGE_FAILURE
 } from "../actions/constants";
 
 const defaultState = { data: null, loading: false, error: null }
@@ -185,6 +188,35 @@ export function uploadItemImage(state = defaultState, action) {
     }
 
 }
+
+export function deleteItemImage(state = defaultState, action) {
+
+    switch (action.type) {
+        case DELETE_ITEM_IMAGE_REQUEST:
+            return {
+                ...state,
+                loading: true,
+                error: null
+            };
+        case DELETE_ITEM_IMAGE_SUCCESS:
+            return {
+                data: action.data,
+                loading: false,
+                error: null
+            };
+        case DELETE_ITEM_IMAGE_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.error
+            };
+        default:
+            return state;
+    }
+
+}
+
+
 
 export function findItems(state = defaultState, action) {
     switch (action.type) {

@@ -172,7 +172,7 @@ class Units extends Component {
                 </Button>
                 </div>
                 <MUIDataTable
-                    title={"Items List"}
+                    title={"Units List"}
                     data={!loading ? data : []}
                     columns={column}
                     options={options}

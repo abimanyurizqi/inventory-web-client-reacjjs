@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { findItemById, findItems, deleteItemById, addItem, editItem , findItemImage, uploadItemImage} from './items';
+import { findItemById, findItems, deleteItemById, addItem, editItem , findItemImage, uploadItemImage, deleteItemImage} from './items';
 import { findUnitById, findUnits, deleteUnitById, addUnit, editUnit } from './units';
 import {
     deleteStockById,
@@ -16,6 +16,7 @@ import {
     findTransactions,
     addTransaction,
     editTransaction,
+    summaryTransactions
 } from './transactions'
 
 
@@ -27,6 +28,7 @@ export default combineReducers({
     editItem,
     findItemImage,
     uploadItemImage,
+    deleteItemImage,
 
     deleteUnitById,
     findUnitById,
@@ -46,6 +48,7 @@ export default combineReducers({
     findTransactions,
     addTransaction,
     editTransaction,
+    summaryTransactions
 
 
 });

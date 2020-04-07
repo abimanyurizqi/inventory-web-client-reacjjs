@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, CircularProgress } from '@material-ui/core';
 import Page from '../../../components/Page';
-import { findById, add, edit, findImage, uploadImage } from '../../../actions/items';
+import { findById, add, edit, findImage, uploadImage, deleteImage } from '../../../actions/items';
 import styles from './styles';
 import { withStyles } from '@material-ui/core/styles';
 import SaveIcon from '@material-ui/icons/SaveRounded';
@@ -38,17 +38,22 @@ class ItemPage extends Component {
     }
 
     componentDidMount() {
+        this.reload();
+    }
+
+    reload() {
         const { item } = this.state;
         if (item.id) {
             this.props.findById(item.id);
             this.props.findImage(item.id);
-
+        } else {
+            this.setState({ imageURL: noImage })
         }
     }
 
 
     componentDidUpdate(prevProps, prevState) {
-        const { data, error, addError, editError, addData, editData, imageData } = this.props;
+        const { data, error, addError, editError, addData, editData, imageData, imageUpload, imageDelete, imageDeleteError } = this.props;
 
         if (prevProps.data !== data) {
             this.setState({ item: data });
@@ -85,9 +90,23 @@ class ItemPage extends Component {
             this.setState({ error: error });
             this.props.history.push({ pathname: `/items/add` });
         }
-
+        
         if (prevProps.imageData !== imageData) {
             this.setState({ imageURL: imageData?.url || noImage })
+        } else if (prevProps.imageDeleteError !== imageDeleteError) {
+            this.setState({ error: imageDeleteError })
+            Swal.fire(
+                'Ops!',
+                'Deleting process went wrong.',
+                'error'
+            );
+
+        } else if (imageUpload && prevProps.imageUpload !== imageUpload){
+            Swal.fire(
+                'Ops!',
+                'Deleting process went wrong.',
+                'error'
+            );
         }
     }
 
@@ -117,21 +136,27 @@ class ItemPage extends Component {
             this.props.add(this.state.item);
         } else {
             this.props.edit(this.state.item);
-
         }
 
     };
 
-    fileSelectedHandler = (event) => {
-        this.setState({ selectedImage: event.target.files[0] });
-        
+    onDeleteImage = () => {
+        const { item } = this.state
+        const { imageData } = this.props
+        this.props.deleteImage(item.id, imageData)
+
     }
 
-    fileUploadHandler =()=>{
+    fileSelectedHandler = (event) => {
+        const files = event.target.files;
+        this.setState({ selectedImage: files });
 
-        console.log(this.state.selectedImage.name);
+
+    }
+
+    fileUploadHandler = () => {
         this.props.uploadImage(this.state.item.id, this.state.selectedImage);
-        console.log(this.state.selectedImage)
+        
     }
 
     goBack() {
@@ -139,7 +164,7 @@ class ItemPage extends Component {
     }
 
     render() {
-        const { classes, loading, addError, editError, imageData } = this.props;
+        const { classes, loading, addError, editError, imageData, imageUploadLoading } = this.props;
         const { item, imageURL } = this.state;
         const errorData = addError?.data || editError?.data || {}
         return (
@@ -192,14 +217,16 @@ class ItemPage extends Component {
                                     {!imageData ?
                                         <div>
                                             <h2 id="transition-modal-title">Upload Image</h2>
-                                            <input type="file" onChange={this.fileSelectedHandler} />
-                                            <Button className={classes.buttonStyle} variant="contained" onClick={this.fileUploadHandler} color="primary" >
-                                                upload
+                                            {!imageUploadLoading ? <div>
+                                                <input type="file" onChange={this.fileSelectedHandler} />
+                                                <Button className={classes.buttonStyle} variant="contained" onClick={this.fileUploadHandler} color="primary" >
+                                                    upload
                                             </Button>
+                                            </div> : <CircularProgress />}
                                         </div> :
                                         <div>
                                             <h2 id="transition-modal-title">Delete Image</h2>
-                                            <Button className={classes.buttonStyle} variant="contained" color="primary" >
+                                            <Button className={classes.buttonStyle} variant="contained" onClick={this.onDeleteImage} color="primary" >
                                                 Delete
                                             </Button>
                                         </div>
@@ -220,7 +247,7 @@ class ItemPage extends Component {
 
 const mapStateToProps = state => ({
     data: state.findItemById.data,
-    loading: state.findItemById.loading || state.addItem.loading || state.editItem.loading || state.findItemImage.loading,
+    loading: state.findItemById.loading || state.addItem.loading || state.editItem.loading || state.findItemImage.loading || state.deleteItemImage.loading,
     error: state.findItemById.error,
 
     addData: state.addItem.data,
@@ -233,7 +260,12 @@ const mapStateToProps = state => ({
     imageError: state.findItemImage.error,
 
     imageUpload: state.uploadItemImage.data,
-    imageUploadError: state.uploadItemImage.error
+    imageUploadError: state.uploadItemImage.error,
+    imageUploadLoading: state.uploadItemImage.loading,
+
+    imageDelete: state.deleteItemImage.data,
+    imageDeleteError: state.deleteItemImage.error
+
 });
 
 const mapDispatchToProps = {
@@ -241,7 +273,8 @@ const mapDispatchToProps = {
     add,
     edit,
     findImage,
-    uploadImage
+    uploadImage,
+    deleteImage
 };
 
 export default withStyles(styles, { withTheme: true })(

@@ -82,7 +82,6 @@ class ItemsPage extends Component {
         }).then((result) => {
             if (result.value) {
                 this.props.deleteById(e.id);
-                this.onChangePage(this.state.params.page - 1)
             }
         })
         
