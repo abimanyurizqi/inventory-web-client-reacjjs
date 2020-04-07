@@ -10,9 +10,24 @@ import { Button, CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/AddCircleRounded';
 import RefreshIcon from '@material-ui/icons/RefreshRounded';
 import { connect } from 'react-redux';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
 
+const months = [
+    { name: "JANUARY", month: 1 },
+    { name: "FEBRUARY", month: 2 },
+    { name: "MARCH", month: 3 },
+    { name: "APRIL", month: 4 },
+    { name: "MEI", month: 5 },
+    { name: "JUNE", month: 6 },
+    { name: "JULY", month: 7 },
+    { name: "AUGUST", month: 8 },
+    { name: "SEPTEMBER", month: 9 },
+    { name: "OCTOBER", month: 10 },
+    { name: "NOVEMBER", month: 11 },
+    { name: "DECEMBER", month: 12 },
 
-
+];
 
 class TransactionsPage extends Component {
 
@@ -128,6 +143,27 @@ class TransactionsPage extends Component {
         this.reload()
     };
 
+    onSubmit = (event) => {
+        const { summaryParams } = this.state
+        event.preventDefault();
+        this.props.summary(summaryParams)
+
+    }
+
+    onMonthChange = (event, value) => {
+        const { summaryParams } = this.state;
+        this.setState({ summaryParams: { ...summaryParams, month: value.month } })
+    }
+
+    onYearChange = (event) => {
+        const { value } = event.target;
+        const { summaryParams } = this.state;
+        this.setState({ summaryParams: { ...summaryParams, year: value } })
+    }
+
+
+
+
 
     render() {
         const { classes, loading } = this.props;
@@ -163,6 +199,8 @@ class TransactionsPage extends Component {
                 }
             }
         ];
+
+
 
 
         const columnSummary = [
@@ -218,7 +256,7 @@ class TransactionsPage extends Component {
             <Page error={error} >
                 {!open ?
                     <div>
-                        
+
                         <div className={classes.buttonContainer}>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"
                                 onClick={this.onAdd}
@@ -231,7 +269,7 @@ class TransactionsPage extends Component {
                                 disabled={loading}>
                                 Reload
                     </Button>
-                    <Button className={classes.buttonStyle} variant="contained" color="primary"
+                            <Button className={classes.buttonStyle} variant="contained" color="primary"
                                 onClick={this.handleOpen}
                                 startIcon={<AddIcon />}>
                                 Summary
@@ -245,6 +283,23 @@ class TransactionsPage extends Component {
                         />
                     </div> :
                     <div>
+                        <form noValidate autoComplete="off" onSubmit={this.onSubmit}>
+                            <div className={classes.formField}>
+                                <TextField id="yearParam" style={{ width: 200 }} name="yearParam" onChange={this.onYearChange} label="Year" variant="outlined" fullWidth />
+                                <Autocomplete
+                                    id="monthParam"
+                                    options={months}
+                                    onChange={this.onMonthChange}
+                                    getOptionLabel={(option) => option.name}
+                                    getOptionSelected={(option) => option.month}
+                                    style={{ width: 200 }}
+                                    renderInput={(params) => <TextField {...params} label="Month" variant="outlined" />}
+                                />
+                            </div>
+                            <Button className={classes.buttonStyle} variant="contained" onClick={this.onSubmit} color="primary" >
+                                Save
+                            </Button>
+                        </form>
                         <div className={classes.buttonContainer}>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"
                                 onClick={this.onAdd}
