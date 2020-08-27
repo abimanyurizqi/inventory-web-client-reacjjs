@@ -19,7 +19,7 @@ class App extends Component {
           {routes.map((route, index) => 
           <Route key={index} 
           path={route.path} 
-          exact component={route.component} 
+          exact component={route.component}
           exact={route.exact}
           render ={props => <route.component {...props} {...route.props} />
           } />

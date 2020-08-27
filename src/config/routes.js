@@ -15,6 +15,10 @@ const routes = [
     component: TransactionPage,
   },
   {
+    path: '/transaction/summary',
+    component: TransactionsPage,
+  },
+  {
     path: '/',
     component: TransactionsPage,
     exact: true

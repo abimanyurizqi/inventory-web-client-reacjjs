@@ -67,12 +67,12 @@ export const findById = (id) =>
             });
     };
 
-export const add = (unit) =>
+export const add = ({name, description}) =>
     (dispatch) => {
 
         dispatch({ type: ADD_UNIT_REQUEST });
 
-        commonAxios.post(`units`, unit)
+        commonAxios.post(`units`, {name: name, description: description})
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(addUnitSuccess(data));
@@ -93,12 +93,12 @@ export const add = (unit) =>
             });
     };
 
-export const edit = (unit) =>
+export const edit = ({id, name, description}) =>
     (dispatch) => {
 
         dispatch({ type: UPDATE_UNIT_REQUEST });
 
-        commonAxios.put(`units/${unit.id}`, unit)
+        commonAxios.put(`units/${id}`, {name: name, description:description})
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(editUnitSuccess(data));

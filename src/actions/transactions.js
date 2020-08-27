@@ -70,12 +70,13 @@ export const findById = (id) =>
             });
     };
 
-export const add = (transaction) =>
+export const add = ({typeTransaction, amount, description}) =>
     (dispatch) => {
 
         dispatch({ type: ADD_TRANSACTION_REQUEST });
 
-        commonAxios.post(`transactions`, transaction)
+        commonAxios.post(`transactions`, {typeTransaction: typeTransaction
+        , amount: amount, description: description})
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(addTransactionSuccess(data));
@@ -88,12 +89,12 @@ export const add = (transaction) =>
             });
     };
 
-export const edit = (transaction) =>
+export const edit = ({id, typeTransaction, amount, description}) =>
     (dispatch) => {
 
         dispatch({ type: UPDATE_TRANSACTION_REQUEST });
 
-        commonAxios.put(`transactions/${transaction.id}`, transaction)
+        commonAxios.put(`transactions/${id}`, {typeTransaction: typeTransaction, amount: amount, description: description})
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(editTransactionSuccess(data));

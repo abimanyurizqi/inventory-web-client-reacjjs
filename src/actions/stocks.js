@@ -70,12 +70,12 @@ export const findById = (id) =>
             });
     };
 
-export const add = (stock) =>
+export const add = (item, unit, quantity) =>
     (dispatch) => {
 
         dispatch({ type: ADD_STOCK_REQUEST });
 
-        commonAxios.post(`stocks`,{itemId: stock.item.id, unitId:stock.unit.id,  quantity: stock.quantity} )
+        commonAxios.post(`stocks`,{itemId: item.id, unitId: unit.id,  quantity: quantity} )
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(addStockSuccess(data));
@@ -96,12 +96,12 @@ export const add = (stock) =>
             });
     };
 
-    export const edit = (stock) =>
+    export const edit = ({id, item, unit, quantity}) =>
     (dispatch) => {
 
         dispatch({ type: UPDATE_STOCK_REQUEST });
 
-        commonAxios.put(`stocks/${stock.id}`, {itemId: stock.item.id, unitId:stock.unit.id,  quantity: stock.quantity} )
+        commonAxios.put(`stocks/${id}`, {itemId: item.id, unitId:unit.id,  quantity: quantity} )
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(editStockSuccess(data));

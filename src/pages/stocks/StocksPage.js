@@ -9,6 +9,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { Button, CircularProgress } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/AddCircleRounded';
 import RefreshIcon from '@material-ui/icons/RefreshRounded';
+import TimelineRoundedIcon from '@material-ui/icons/TimelineRounded';
+import KeyboardReturnRoundedIcon from '@material-ui/icons/KeyboardReturnRounded';
 import { connect } from 'react-redux';
 
 
@@ -215,6 +217,7 @@ class StocksPage extends Component {
         const optionsSummary = {
             serverSide: true,
             selectableRows: false,
+            onRowClick: false,
             textLabels: {
                 body: {
                     noMatch: loading ? <CircularProgress /> : "sorry, no stocks found"
@@ -230,8 +233,8 @@ class StocksPage extends Component {
                         <div className={classes.buttonContainer}>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"
                                 onClick={this.handleOpen}
-                                startIcon={<AddIcon />}>
-                                Stock Summary
+                                startIcon={<TimelineRoundedIcon/>}>
+                                Summary
                             </Button>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"
                                 onClick={this.onAdd}
@@ -255,14 +258,15 @@ class StocksPage extends Component {
                     <div><div className={classes.buttonContainer}>
                         <Button className={classes.buttonStyle} variant="contained" color="primary"
                             onClick={this.onReload}
-                            startIcon={<RefreshIcon />}>
-                            Stocks
+                            startIcon={<KeyboardReturnRoundedIcon />}>
+                            Back
                         </Button>
                         <Button className={classes.buttonStyle} variant="contained" color="primary"
-                            onClick={this.onAdd}
-                            startIcon={<AddIcon />}>
-                            New Stock
-                        </Button>
+                                onClick={this.props.summary}
+                                startIcon={<RefreshIcon />}
+                                disabled={loading}>
+                                Reload
+                            </Button>
                     </div>
                         <MUIDataTable
                             title={"Stocks Summary List"}

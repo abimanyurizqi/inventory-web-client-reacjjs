@@ -115,7 +115,7 @@ export const findImage = (id) =>
         
         const fd = new FormData();
         fd.append("file", image[0]);
-        commonAxios.post(`items/${id}/images`, fd, {
+        commonAxios.post(`store/${id}/images`, fd, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
@@ -130,12 +130,12 @@ export const findImage = (id) =>
             });
     };
 
-export const add = (item) =>
+export const add = ({name}) =>
     (dispatch) => {
 
         dispatch({ type: ADD_ITEM_REQUEST });
 
-        commonAxios.post(`items`, item)
+        commonAxios.post(`items`, {name: name})
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(addItemSuccess(data));
@@ -148,12 +148,12 @@ export const add = (item) =>
             });
     };
 
-export const edit = (item) =>
+export const edit = ({id, name}) =>
     (dispatch) => {
 
         dispatch({ type: UPDATE_ITEM_REQUEST });
 
-        commonAxios.put(`items/${item.id}`, item)
+        commonAxios.put(`items/${id}`, {name: name})
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(editItemSuccess(data));
@@ -173,9 +173,7 @@ export const findAll = ({ search, sort = 'asc', page = 0, size = 10 } = {}) =>
         dispatch({
             type: FIND_ITEMS_REQUEST
         });
-        commonAxios.get('items', {
-            params: { ...search, sort, page, size }
-        })
+        commonAxios.get('items')
             .then(data => sleep(1000, data))
             .then(data => {
                 dispatch(findItemsSuccess(data));

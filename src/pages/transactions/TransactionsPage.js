@@ -12,6 +12,10 @@ import RefreshIcon from '@material-ui/icons/RefreshRounded';
 import { connect } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
+import TimelineRoundedIcon from '@material-ui/icons/TimelineRounded';
+import KeyboardReturnRoundedIcon from '@material-ui/icons/KeyboardReturnRounded';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 const months = [
     { name: "JANUARY", month: 1 },
@@ -44,12 +48,15 @@ class TransactionsPage extends Component {
             error: null,
             open: false,
             summaryParams: {
-                year: null,
-                month: null,
+                year: new Date().getFullYear(),
+                month: new Date().getMonth()+1,
                 date: null
-            }
+            },
+            selectMonth: false
 
         };
+        this.handleCheck = this.handleCheck.bind(this);
+
     }
 
     componentDidMount() {
@@ -58,6 +65,7 @@ class TransactionsPage extends Component {
 
     reload() {
         this.props.findAll(this.state.params);
+        console.log(this.state.params)
     }
 
     onRowClick = (rowData) => {
@@ -68,7 +76,7 @@ class TransactionsPage extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         const { deleteData, deleteError, error, data, summaryData } = this.props;
-        const { params } = this.state;
+        const { params, summaryParams } = this.state;
 
         if (prevProps.data !== data) {
             this.setState({ data: data.list, total: data.total });
@@ -80,7 +88,7 @@ class TransactionsPage extends Component {
         } else if (error && prevProps.error !== error) {
             this.setState({ error: error });
         } else if (prevProps.summaryData !== summaryData) {
-            this.setState({ summaryData: summaryData });
+            this.setState({ summaryData: summaryData })
         }
     }
 
@@ -134,8 +142,7 @@ class TransactionsPage extends Component {
 
     handleOpen = () => {
         this.setState({ open: true });
-        this.props.summary(this.state.summaryParams);
-
+        this.state.summaryParams.month == null ? this.props.summary(this.state.summaryParams) : this.props.summary({year: this.state.summaryParams.year, month: null, date: null})
     };
 
     handleClose = () => {
@@ -144,15 +151,22 @@ class TransactionsPage extends Component {
     };
 
     onSubmit = (event) => {
-        const { summaryParams } = this.state
+        const { summaryParams, selectMonth } = this.state
         event.preventDefault();
-        this.props.summary(summaryParams)
-
+        
+        if(!selectMonth){
+            this.props.summary({year: summaryParams.year, month: null, date: null});
+            console.log(this.state.selectMonth)
+        }else{
+            this.props.summary(summaryParams)
+            console.log(this.state.selectMonth)
+        }
+        
     }
 
     onMonthChange = (event, value) => {
-        const { summaryParams } = this.state;
-        this.setState({ summaryParams: { ...summaryParams, month: value.month } })
+        const { summaryParams, selectMonth } = this.state;
+        this.setState({ summaryParams: { ...summaryParams, month:  value?.month || null }})
     }
 
     onYearChange = (event) => {
@@ -161,13 +175,16 @@ class TransactionsPage extends Component {
         this.setState({ summaryParams: { ...summaryParams, year: value } })
     }
 
-
-
+    handleCheck = (event) => {
+        const isActive = event.target.checked;
+        this.setState({ selectMonth: isActive });
+    
+    }
 
 
     render() {
         const { classes, loading } = this.props;
-        const { data, total, params, error, open, summaryData } = this.state;
+        const { data, total, params, error, open, summaryData, selectMonth, summaryParams } = this.state;
 
         const column = [
             {
@@ -256,8 +273,12 @@ class TransactionsPage extends Component {
             <Page error={error} >
                 {!open ?
                     <div>
-
                         <div className={classes.buttonContainer}>
+                            <Button className={classes.buttonStyle} variant="contained" color="primary"
+                                onClick={this.handleOpen}
+                                startIcon={<TimelineRoundedIcon />}>
+                                Summary
+                            </Button>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"
                                 onClick={this.onAdd}
                                 startIcon={<AddIcon />}>
@@ -269,11 +290,6 @@ class TransactionsPage extends Component {
                                 disabled={loading}>
                                 Reload
                     </Button>
-                            <Button className={classes.buttonStyle} variant="contained" color="primary"
-                                onClick={this.handleOpen}
-                                startIcon={<AddIcon />}>
-                                Summary
-                            </Button>
                         </div>
                         <MUIDataTable
                             title={"Transactions List"}
@@ -284,38 +300,42 @@ class TransactionsPage extends Component {
                     </div> :
                     <div>
                         <form noValidate autoComplete="off" onSubmit={this.onSubmit}>
-                            <div className={classes.formField}>
-                                <TextField id="yearParam" style={{ width: 200 }} name="yearParam" onChange={this.onYearChange} label="Year" variant="outlined" fullWidth />
+                           
+                                <div className={classes.buttonContainer2}>
+                                <TextField id="yearParam" style={{ width: 120, paddingRight: 15 }} value={summaryParams.year} name="yearParam" onChange={this.onYearChange} label="Year" variant="standard" fullWidth />
                                 <Autocomplete
+                                    disabled={!selectMonth ? true : false}
                                     id="monthParam"
                                     options={months}
+                                    defaultValue={months[summaryParams.month-1]}
                                     onChange={this.onMonthChange}
                                     getOptionLabel={(option) => option.name}
                                     getOptionSelected={(option) => option.month}
                                     style={{ width: 200 }}
-                                    renderInput={(params) => <TextField {...params} label="Month" variant="outlined" />}
+                                    renderInput={(params) => <TextField {...params} style={{ width: 170 }} label="Month" variant="standard" />}
                                 />
+                                
+                                <FormControlLabel
+                                    control={<Checkbox onChange={(event) => this.handleCheck(event)} color="primary" />}
+                                    label="Enable Month"
+                                    labelPlacement="month" />
+                                <Button className={classes.buttonStyle} variant="contained" onClick={this.onSubmit} color="primary" >
+                                    submit
+                                </Button>
                             </div>
-                            <Button className={classes.buttonStyle} variant="contained" onClick={this.onSubmit} color="primary" >
-                                Save
-                            </Button>
+                          
                         </form>
                         <div className={classes.buttonContainer}>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"
-                                onClick={this.onAdd}
-                                startIcon={<AddIcon />}>
-                                New Transaction
+                                onClick={this.handleClose}
+                                startIcon={<KeyboardReturnRoundedIcon />}>
+                                Back
                             </Button>
                             <Button className={classes.buttonStyle} variant="contained" color="primary"
                                 onClick={this.onReload}
                                 startIcon={<RefreshIcon />}
                                 disabled={loading}>
                                 Reload
-                            </Button>
-                            <Button className={classes.buttonStyle} variant="contained" color="primary"
-                                onClick={this.handleClose}
-                                startIcon={<AddIcon />}>
-                                TRansaction List
                             </Button>
                         </div>
                         <MUIDataTable

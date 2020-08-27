@@ -53,7 +53,7 @@ class ItemPage extends Component {
 
 
     componentDidUpdate(prevProps, prevState) {
-        const { data, error, addError, editError, addData, editData, imageData, imageUpload, imageDelete, imageDeleteError } = this.props;
+        const { data, error, addError, editError, addData, editData, imageData, imageUpload, imageDelete, imageDeleteError, imageUploadError } = this.props;
 
         if (prevProps.data !== data) {
             this.setState({ item: data });
@@ -95,18 +95,38 @@ class ItemPage extends Component {
             this.setState({ imageURL: imageData?.url || noImage })
         } else if (prevProps.imageDeleteError !== imageDeleteError) {
             this.setState({ error: imageDeleteError })
+            this.handleClose();
             Swal.fire(
                 'Ops!',
                 'Deleting process went wrong.',
                 'error'
             );
 
-        } else if (imageUpload && prevProps.imageUpload !== imageUpload){
+        }else if (prevProps.imageUploadError !== imageUploadError) {
+            this.setState({ error: imageUploadError })
             Swal.fire(
                 'Ops!',
-                'Deleting process went wrong.',
+                'Uploading process went wrong.',
                 'error'
             );
+
+        } else if (prevProps.imageUpload !== imageUpload){
+            Swal.fire(
+                'yeay!',
+                'Your Image has been uploaded',
+                'success'
+            );
+            this.reload();
+            this.handleClose();
+        }
+        else if (prevProps.imageDelete !== imageDelete){
+            Swal.fire(
+                'Deleted!',
+                'Your Image has been deleted',
+                'success'
+            );
+            this.reload()
+            this.handleClose();
         }
     }
 
@@ -217,7 +237,7 @@ class ItemPage extends Component {
                                     {!imageData ?
                                         <div>
                                             <h2 id="transition-modal-title">Upload Image</h2>
-                                            {!imageUploadLoading ? <div>
+                                            {!loading ? <div>
                                                 <input type="file" onChange={this.fileSelectedHandler} />
                                                 <Button className={classes.buttonStyle} variant="contained" onClick={this.fileUploadHandler} color="primary" >
                                                     upload
@@ -247,7 +267,7 @@ class ItemPage extends Component {
 
 const mapStateToProps = state => ({
     data: state.findItemById.data,
-    loading: state.findItemById.loading || state.addItem.loading || state.editItem.loading || state.findItemImage.loading || state.deleteItemImage.loading,
+    loading: state.findItemById.loading || state.addItem.loading || state.editItem.loading || state.findItemImage.loading || state.deleteItemImage.loading || state.uploadItemImage.loading,
     error: state.findItemById.error,
 
     addData: state.addItem.data,
@@ -261,7 +281,6 @@ const mapStateToProps = state => ({
 
     imageUpload: state.uploadItemImage.data,
     imageUploadError: state.uploadItemImage.error,
-    imageUploadLoading: state.uploadItemImage.loading,
 
     imageDelete: state.deleteItemImage.data,
     imageDeleteError: state.deleteItemImage.error
